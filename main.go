@@ -48,19 +48,21 @@ func parseSheet(sheetId string) {
 	}
 
 	// Prints the names and majors of students in a sample spreadsheet:
-	readRange := "Class Data!A2:E"
+	readRange := "Start!J2"
 	resp, err := srv.Spreadsheets.Values.Get(sheetId, readRange).Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve data from sheet: %v", err)
 	}
 
-	if len(resp.Values) == 0 {
-		fmt.Println("No data found.")
-	} else {
-		fmt.Println("Name, Major:")
-		for _, row := range resp.Values {
-			// Print columns A and E, which correspond to indices 0 and 4.
-			fmt.Printf("%s, %s\n", row[0], row[4])
-		}
-	}
+	fmt.Println(resp)
+
+	//if len(resp.Values) == 0 {
+	//	fmt.Println("No data found.")
+	//} else {
+	//	fmt.Println("Name, Major:")
+	//	for _, row := range resp.Values {
+	//		// Print columns A and E, which correspond to indices 0 and 4.
+	//		fmt.Printf("%s, %s\n", row[0], row[4])
+	//	}
+	//}
 }
