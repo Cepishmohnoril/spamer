@@ -15,17 +15,19 @@ import (
 
 var sheetIds = []string{
 	"1j-clXuNPrZlcoxNp2wxBbWINKtHBf2-dzMMQMYh5BsA",
-	"1UZywZiyQBaekJXVDiXlTw5u2qA9M51Fi0q74yGw5W8I",
+	//"1UZywZiyQBaekJXVDiXlTw5u2qA9M51Fi0q74yGw5W8I",
 }
 
 func main() {
 
 	for _, sheetId := range sheetIds {
-		parseSheet(sheetId)
+		requests := getRequests(sheetId)
+		fmt.Println(requests)
+		//sendRequests()
 	}
 }
 
-func parseSheet(sheetId string) {
+func getRequests(sheetId string) []string {
 	fmt.Println("Parse sheet ")
 
 	ctx := context.Background()
@@ -36,7 +38,6 @@ func parseSheet(sheetId string) {
 
 	// If modifying these scopes, delete your previously saved token.json.
 	config, err := google.ConfigFromJSON(b, "https://www.googleapis.com/auth/spreadsheets.readonly")
-	fmt.Println(config)
 
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
@@ -47,22 +48,27 @@ func parseSheet(sheetId string) {
 		log.Fatalf("Unable to retrieve Sheets client: %v", err)
 	}
 
-	// Prints the names and majors of students in a sample spreadsheet:
-	readRange := "Start!J2"
+	//readRange := "Start!J2:DA"
+
+	readRange := "Start!J2:K3"
 	resp, err := srv.Spreadsheets.Values.Get(sheetId, readRange).Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve data from sheet: %v", err)
 	}
 
-	fmt.Println(resp)
+	var requests []string
+	//fmt.Println(resp.Values)
 
-	//if len(resp.Values) == 0 {
-	//	fmt.Println("No data found.")
-	//} else {
-	//	fmt.Println("Name, Major:")
-	//	for _, row := range resp.Values {
-	//		// Print columns A and E, which correspond to indices 0 and 4.
-	//		fmt.Printf("%s, %s\n", row[0], row[4])
-	//	}
-	//}
+	for _, sl := range resp.Values {
+		for _, req := range sl {
+			req, _ := req.(string)
+			requests = append(requests, req)
+		}
+	}
+
+	return requests
+}
+
+func sendRequests() {
+
 }
