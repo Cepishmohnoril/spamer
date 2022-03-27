@@ -19,14 +19,10 @@ var sheetIds = []string{
 }
 
 func main() {
-
-	requests := []string{"https://www.google-analytics.com/collect?v=1&t=pageview&tid=немає&cid=63383030&dr=https%3A%2F%2Fwww.nurnberg2022.org%2Fen%2Fall-news&cn=%D0%B2%D1%8B%20-%20%D1%81%D0%BF%D0%BE%D0%BD%D1%81%D0%BE%D1%80%D1%8B%20%D0%B2%D0%BE%D0%B9%D0%BD%D1%8B&cs=%D0%B2%D1%8B%20-%20%D1%81%D0%BF%D0%BE%D0%BD%D1%81%D0%BE%D1%80%D1%8B%20%D0%B2%D0%BE%D0%B9%D0%BD%D1%8B&cm=https%3A%2F%2Fwww.nurnberg2022.org%2Fen%2Fall-news&dp=https%3A%2F%2Fwww.nurnberg2022.org%2Fen%2Fall-news"}
-	sendRequests(requests)
-
-	//for _, sheetId := range sheetIds {
-	//	requests := getRequests(sheetId)
-	//	sendRequests(requests)
-	//}
+	for _, sheetId := range sheetIds {
+		requests := getRequests(sheetId)
+		sendRequests(requests)
+	}
 }
 
 func getRequests(sheetId string) []string {
@@ -50,9 +46,7 @@ func getRequests(sheetId string) []string {
 		log.Fatalf("Unable to retrieve Sheets client: %v", err)
 	}
 
-	//readRange := "Start!J2:DA"
-
-	readRange := "Start!J2:K3"
+	readRange := "Start!J2:DA"
 	resp, err := srv.Spreadsheets.Values.Get(sheetId, readRange).Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve data from sheet: %v", err)

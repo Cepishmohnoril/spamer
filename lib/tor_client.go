@@ -40,9 +40,9 @@ func SendTorPost(webUrl string, client *http.Client) {
 	resp, err := client.Do(r)
 
 	if err != nil {
-		log.Fatal("Error making POST request.", err)
+		log.Println("Error making POST request.", err)
+	} else {
+		defer resp.Body.Close()
+		log.Println(webUrl, " Return status code:", resp.StatusCode)
 	}
-	defer resp.Body.Close()
-
-	log.Println(webUrl, " Return status code:", resp.StatusCode)
 }
