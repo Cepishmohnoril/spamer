@@ -15,20 +15,22 @@ import (
 
 var sheetIds = []string{
 	"1j-clXuNPrZlcoxNp2wxBbWINKtHBf2-dzMMQMYh5BsA",
-	//"1UZywZiyQBaekJXVDiXlTw5u2qA9M51Fi0q74yGw5W8I",
+	"1UZywZiyQBaekJXVDiXlTw5u2qA9M51Fi0q74yGw5W8I",
 }
 
 func main() {
 
-	for _, sheetId := range sheetIds {
-		requests := getRequests(sheetId)
-		fmt.Println(requests)
-		//sendRequests()
-	}
+	requests := []string{"https://www.google-analytics.com/collect?v=1&t=pageview&tid=немає&cid=63383030&dr=https%3A%2F%2Fwww.nurnberg2022.org%2Fen%2Fall-news&cn=%D0%B2%D1%8B%20-%20%D1%81%D0%BF%D0%BE%D0%BD%D1%81%D0%BE%D1%80%D1%8B%20%D0%B2%D0%BE%D0%B9%D0%BD%D1%8B&cs=%D0%B2%D1%8B%20-%20%D1%81%D0%BF%D0%BE%D0%BD%D1%81%D0%BE%D1%80%D1%8B%20%D0%B2%D0%BE%D0%B9%D0%BD%D1%8B&cm=https%3A%2F%2Fwww.nurnberg2022.org%2Fen%2Fall-news&dp=https%3A%2F%2Fwww.nurnberg2022.org%2Fen%2Fall-news"}
+	sendRequests(requests)
+
+	//for _, sheetId := range sheetIds {
+	//	requests := getRequests(sheetId)
+	//	sendRequests(requests)
+	//}
 }
 
 func getRequests(sheetId string) []string {
-	fmt.Println("Parse sheet ")
+	fmt.Println("Parse sheet: ", sheetId)
 
 	ctx := context.Background()
 	b, err := ioutil.ReadFile("credentials.json")
@@ -42,7 +44,7 @@ func getRequests(sheetId string) []string {
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
-	client := lib.GetClient(config)
+	client := lib.GetGoogleClient(config)
 	srv, err := sheets.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		log.Fatalf("Unable to retrieve Sheets client: %v", err)
@@ -57,7 +59,6 @@ func getRequests(sheetId string) []string {
 	}
 
 	var requests []string
-	//fmt.Println(resp.Values)
 
 	for _, sl := range resp.Values {
 		for _, req := range sl {
@@ -69,6 +70,10 @@ func getRequests(sheetId string) []string {
 	return requests
 }
 
-func sendRequests() {
+func sendRequests(requests []string) {
+	client := lib.GetTorClient()
 
+	for _, url := range requests {
+		lib.SendTorPost(url, client)
+	}
 }
