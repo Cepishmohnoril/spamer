@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"sync"
 
 	"spamer/lib"
 
@@ -18,11 +19,18 @@ var sheetIds = []string{
 	"1UZywZiyQBaekJXVDiXlTw5u2qA9M51Fi0q74yGw5W8I",
 }
 
+var wg sync.WaitGroup
+
 func main() {
 	for _, sheetId := range sheetIds {
-		requests := getRequests(sheetId)
-		sendRequests(requests)
+		wg.Add(1)
+		go func(sheetId string) {
+			requests := getRequests(sheetId)
+			sendRequests(requests)
+			wg.Done()
+		}(sheetId)
 	}
+	wg.Wait()
 }
 
 func getRequests(sheetId string) []string {
